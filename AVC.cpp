@@ -96,7 +96,19 @@ int main () { // example of main ( ) i n v o k i n g the c l a s s
 	return 0;
 }
 
-
+int Robot::MeasureLine(){
+	int row = 0;
+	int col = 0;
+	take_picture();
+	
+	
+	
+		while (col < 320){
+	double a = double[i];
+	
+	col = col++;
+}
+}
 
 int Robot::FollowLine(){
 	MeasureLine();
