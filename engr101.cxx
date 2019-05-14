@@ -21,23 +21,6 @@
  * 
  */
 
-int main () { // example of main ( ) i n v o k i n g the c l a s s
-Robot robot;
-robot.InitHardware () ;
-int count = 0;
-open_screen_stream () ;
-while ( count < 5000)
-	{
-	robot.MeasureLine () ;
-	robot.FollowLine () ;
-	count ++;
-	}
-// s a v e _ p i ct u r e ( " f i l e 1 " ) ;
-close_screen_stream ( ) ;
-stoph() ;
-return 0;
-}
-
 class Robot{ //declaration
 	private:
 		int v_left,v_right, cam_tilt;
@@ -60,6 +43,23 @@ class Robot{ //declaration
 		int MeasureLine();
 		int FollowLine();
 };
+
+int main () { // example of main ( ) i n v o k i n g the c l a s s
+Robot robot;
+robot.InitHardware () ;
+int count = 0;
+open_screen_stream () ;
+while ( count < 5000)
+	{
+	robot.MeasureLine () ;
+	robot.FollowLine () ;
+	count ++;
+	}
+// s a v e _ p i ct u r e ( " f i l e 1 " ) ;
+close_screen_stream ( ) ;
+stoph() ;
+return 0;
+}
 
 int Robot::FollowLine(){
 MeasureLine();
