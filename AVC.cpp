@@ -57,6 +57,14 @@ using namespace std;
 //ts_end.tv_nsec-ts_start.tv_nsec;
 //cout<<"elapsed[ns]="<<elapsed<<endl;
 //
+
+//while not connected
+while(connect_to_server != 0){
+	int connect_to_server( char server_addr[15], int port);
+	int send_to_server( char message[24]);
+	int receive_from_server( char message[24]);
+}
+
 class Robot{ //declaration
 	private:
 		int v_left,v_right, cam_tilt;
