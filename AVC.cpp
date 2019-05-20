@@ -82,7 +82,7 @@ class Robot{ //declaration
 	public:
 		Rob(){};
 		int initHardware();
-		void ReadSetMotors();
+		void ReadSetMotors(); = new int[320];
 		void SetMotors();
 		int MeasureLine();
 		int FollowLine();
@@ -105,18 +105,16 @@ int main () { // example of main ( ) i n v o k i n g the c l a s s
 }
 
 int Robot::MeasureLine(){
-	int row = 0;
-	int col = 0;
+	int row = 120;
 	take_picture();
-	
-	
-	
-		while (col < 320){
-	double a = double[i];
-	
-	col = col++;
+	int whiteness[320];
+	for(int col = 0; col< 320; col++){
+		int white = getPixel(row, col);
+		whiteness[col] = white;
+			
+	}
 }
-}
+
 
 int Robot::FollowLine(){
 	MeasureLine();
@@ -125,7 +123,7 @@ int Robot::FollowLine(){
 		// dv = 0;
 		v_left = v_left_go + dv ;
 		v_right = v_right_go + dv ;
-		cout<< "l i n e _ e r r o r = " << line_error << " dv= " <<dv ;
+		cout<< "line_error = " << line_error << " dv= " <<dv ;
 		SetMotors() ;
 	} else {
 	// go back
@@ -138,3 +136,17 @@ int Robot::FollowLine(){
 	return 0;
 }
 
+bool Robot::OpenGate() {
+
+	char message[24]="Please";
+	char password[24];
+	char IP[15]="130.195.6.196";
+
+	connect_to_server(IP, 1024); //need to find this out!!
+	send_to_server(message);
+	receive_from_server(password);
+	send_to_server(password);
+	
+	return true;
+
+}
