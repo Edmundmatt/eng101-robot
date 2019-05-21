@@ -24,54 +24,19 @@
 #include <iostream>
 #include <math.h>
 #include <sys/time.h>
-//#include "E101.h"
+#include "E101.h"
 
 using namespace std;
-//int main(){
-//struct timespec ts_start;
-//struct timespec ts_end;
-//clock_gettime(CLOCK_MONOTONIC, &ts_start);
-//for ( int i = 0 ; i< 560;i++){//ci n t Robot : : Fo l lowL ine ( ) {
-//MeasureLine ( ) ;
-//i f ( l i n e _ p r e s e nt ) {
-//dv = ( i n t ) ( l i n e _ e r r o r∗kp ) ;
-// / / dv = 0;
-//v _ l e f t = v _ l eft _ g o + dv ;
-//v _ r i g h t = v _ r i g ht _ g o + dv ;
-//cout << " l i n e _ e r r o r = " << l i n e _ e r r o r << " dv= " <<dv ;
-//SetMoto rs ( ) ;
-//} else {
-// / / go back
-//cout << " Line mi s sing " <<endl ;
-//v _ l e f t = 39;
-//v _ r i g h t = 55;
-//SetMoto rs ( ) ;
-//sleep1 ( 1 0 0 ) ;
-//}
-//re tu rn 0;
-//}ode_to_time();
-//double x = sin(i);
-//}
-//clock_gettime(CLOCK_MONOTONIC, &ts_end);
-//long elapsed = (ts_end.tv_sec-ts_start.tv_sec)*1000000000 +
-//ts_end.tv_nsec-ts_start.tv_nsec;
-//cout<<"elapsed[ns]="<<elapsed<<endl;
-//
 
-//while not connected
-while(connect_to_server != 0){
-	int connect_to_server( char server_addr[15], int port);
-	int send_to_server( char message[24]);
-	int receive_from_server( char message[24]);
-}
 
 class Robot{ //declaration
 	private:
+		int whiteness[320];
 		int v_left,v_right, cam_tilt;
 		int dv;
 		double line_error;
 		int quadrant;
-		const int cam_width + 320;
+		const int cam_width = 320;
 		const  int cam_height  =240;
 		
 		const int v_lefy_go =52; 
@@ -80,48 +45,45 @@ class Robot{ //declaration
 		int line_present = 1;
 	
 	public:
-		Rob(){};
+		Robot(){};
+		~Robot(){};
 		int initHardware();
-		void ReadSetMotors(); = new int[320];
+		void ReadSetMotors();
 		void SetMotors();
 		int MeasureLine();
 		int FollowLine();
+		void openGate();
 };
-int main () { // example of main ( ) i n v o k i n g the c l a s s
-	Robot robot;
-	robot.InitHardware () ;
-	int count = 0;
-	open_screen_stream () ;
-	while ( count < 5000)
-		{
-		robot.MeasureLine () ;
-		robot.FollowLine () ;
-		count ++;
-		}
-	// s a v e _ p i ct u r e ( " f i l e 1 " ) ;
-	close_screen_stream ( ) ;
-	stoph() ;
-	return 0;
-}
 
 int Robot::MeasureLine(){
 	int row = 120;
 	take_picture();
-	int whiteness[320];
+	update_screen();
+	
+	//Clear the array
+	for(int i = 0; i<320; i++){
+		fill_n(whiteness, i , 0);
+	}
+	
 	for(int col = 0; col< 320; col++){
-		int white = getPixel(row, col);
-		whiteness[col] = white;
+		int intensity = (int)get_pixel(row, col, 3);
+		whiteness[col] = intensity;
+		cout << whiteness[col];
 			
 	}
+	return 0;
 }
 
 
 int Robot::FollowLine(){
-	MeasureLine();
+	/*int whiteness[320] = MeasureLine();
+	bool line_present = false;
+	for(int i = 0; i<320; i++){
+		if(whiteness[i] < 
 	if (line_present){
-		dv = ( int ) (line_error∗kp) ;
+		int dv = ( int ) (line_error∗kp) ;
 		// dv = 0;
-		v_left = v_left_go + dv ;
+		int v_left = v_left_go + dv ;
 		v_right = v_right_go + dv ;
 		cout<< "line_error = " << line_error << " dv= " <<dv ;
 		SetMotors() ;
@@ -132,11 +94,11 @@ int Robot::FollowLine(){
 		v_right = 55;
 		SetMotors () ;
 		sleep1( 100 ) ;
-	}
+	}*/
 	return 0;
 }
 
-bool Robot::OpenGate() {
+void Robot::openGate() {
 
 	char message[24]="Please";
 	char password[24];
@@ -147,6 +109,26 @@ bool Robot::OpenGate() {
 	receive_from_server(password);
 	send_to_server(password);
 	
-	return true;
+	//return true;
 
+}
+
+int main () { // example of main ( ) i n v o k i n g the c l a s s
+	open_screen_stream();
+	Robot robot;
+	robot.openGate();
+	robot.MeasureLine();
+	/*robot.initHardware () ;
+	//int count = 0;
+	open_screen_stream () ;
+	while ( count < 5000)
+		{
+		robot.FollowLine () ;
+		count ++;
+		}
+	// s a v e _ p i ct u r e ( " f i l e 1 " ) ;
+	close_screen_stream ( ) ;
+	stoph() ;*/
+	close_screen_stream();
+	return 0;
 }
