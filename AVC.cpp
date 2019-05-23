@@ -49,6 +49,7 @@ class Robot{ //declaration
 	public:
 		Robot(){};
 		~Robot(){};
+
 		int initHardware();
 		void ReadSetMotors();
 		void SetMotors();
@@ -61,86 +62,81 @@ class Robot{ //declaration
 };
 
 int Robot::MeasureLine(){
-	int row = 120;
-	take_picture();
-	//update_screen();
-	
-	//Clear the array
-	for(int i = 0; i<320; i++){
-		fill_n(whiteness, i , 0);
-	}
-	//Testing loop for camera input
-	/*for(int col = 0; col< 320; col++){
-		int intensity = (int)get_pixel(row, col, 3);
-		whiteness[col] = intensity;
-		cout << whiteness[col];
-		if (whiteness[col]< 80 ) {
-			cout << " _______ ";
-		}
-	}*/
-	int leftWhite = 0;
-	int black = 0;
-	int rightWhite = 0;
-	for(int col = 0; col<320; col++){
-		int intensity = (int)get_pixel(row,col, 3);
-		whiteness[col] = intensity;
-	}
-	for(int col = 0; col<320; col++){
-		while(whiteness[col] > 80){
-			leftWhite++;
-			col++;
-		}
-		while(whiteness[col] < 80){
-			black++;
-			col++;
-		}
-		while(whiteness[col] > 80){
-			rightWhite++;
-			col++;
-		}
-	}
-	
-	double ratio = (leftWhite-rightWhite);
-	int mArea = 20;
-	if(ratio > mArea){
-		//turn left
-		turnRight(5);
-	}
-	else if(ratio < -mArea){
-		//turn right
-		turnLeft(5);
-	}
-	else {
-		//go straight
-		goStraight();
-	}
-	
-	return 0;
+        int row = 120;
+        take_picture();
+        //update_screen();
+
+        //Clear the array
+        for(int i = 0; i<320; i++){
+                fill_n(whiteness, i , 0);
+        }
+        //Testing loop for camera input
+        /*for(int col = 0; col< 320; col++){
+                int intensity = (int)get_pixel(row, col, 3);
+                whiteness[col] = intensity;
+                cout << whiteness[col];
+                if (whiteness[col]< 80 ) {
+                        cout << " _______ ";
+                }
+        }*/
+        int leftWhite = 0;
+        int black = 0;
+        int rightWhite = 0;
+        for(int col = 0; col<320; col++){
+                int intensity = (int)get_pixel(row,col, 3);
+                whiteness[col] = intensity;
+        }
+        for(int col = 0; col<320; col++){
+                while(whiteness[col] > 80){
+                        leftWhite++;
+                        col++;
+                }
+                while(whiteness[col] < 80){
+                        black++;
+                        col++;
+                }
+                while(whiteness[col] > 80){
+                        rightWhite++;
+                        col++;
+                }
+        }
+
+        double ratio = (leftWhite-rightWhite);
+        cout << "   " << ratio << "   ";
+        int mArea = 20;
+        double speed = 10;
+        if(ratio > mArea){
+                //turn right
+                speed = getSpeed(ratio, mArea);
+                turnRight(speed);
+        }
+        else if(ratio < -mArea){
+                //turn left
+                speed = getSpeed(ratio, mArea);
+                turnLeft(speed);
+        }
+        else {
+                //go straight
+                goStraight();
+        }
+         
+        return 0;
+
 }
 
+double Robot::getSpeed(double ratio, double mArea){
+        double ratio2 = fabs(ratio);
+        double speed;
+        if(ratio2 > 150){
+                cout<<" hard turn ";
+        }
+        else{
+                cout<<" soft turn ";
+        }
 
-int Robot::FollowLine(){
-	/*int whiteness[320] = MeasureLine();
-	bool line_present = false;
-	for(int i = 0; i<320; i++){
-		if(whiteness[i] < 
-	if (line_present){
-		int dv = ( int ) (line_error∗kp) ;
-		// dv = 0;
-		int v_left = v_left_go + dv ;
-		v_right = v_right_go + dv ;
-		cout<< "line_error = " << line_error << " dv= " <<dv ;
-		SetMotors() ;
-	} else {
-	// go back
-		cout<< " Line missing " <<endl ;
-		v_left = 39;
-		v_right = 55;
-		SetMotors () ;
-		sleep1( 100 ) ;
-	}*/
-	return 0;
+        return speed;
 }
+
 
 void Robot::openGate() {
 
