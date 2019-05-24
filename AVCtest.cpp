@@ -8,15 +8,17 @@ using namespace std;
 
 class Robot{ //declaration
 	private:
-		int whiteness[320];
+	int whiteness[320];
+	int redness[320] ;
 		int v_left,v_right, cam_tilt;
 		int dv;
 		double line_error;
 		int quadrant;
 		
-		int leftWhite = 0;
+	int leftWhite = 0;
         int black = 0;
         int rightWhite = 0;
+	int red = 0;
         
         int mArea = 20;
         double speed = 10;
@@ -55,6 +57,7 @@ int Robot::MeasureLine(){
         //Clear the array
         for(int i = 0; i<320; i++){
                 fill_n(whiteness, i , 0);
+		 fill_n(redness, i , 0);
         }
         //Testing loop for camera input
         /*for(int col = 0; col< 320; col++){
@@ -68,9 +71,12 @@ int Robot::MeasureLine(){
        leftWhite = 0;
        rightWhite=0;
        black =0;
+	red = 0;
         for(int col = 0; col<320; col++){
                 int intensity = (int)get_pixel(row,col, 3);
-                whiteness[col] = intensity;
+		whiteness[col] = intensity;
+		int red = (int)get_pixel(row,col, 1)
+		redness[col] = red;
         }
         for(int col = 0; col<320; col++){
                 while(whiteness[col] > 80){
@@ -86,7 +92,7 @@ int Robot::MeasureLine(){
                         col++;
                 }
         }
-
+	
         
 
 }
@@ -109,7 +115,12 @@ void Robot::moving(){
                 //go straight
                 goStraight();
         }
-         
+        
+	if ( redness> 0.65) {
+	  //breaks;	
+		quadrant ++;
+		printf("break");
+	}
         return 0;
 	
 }
@@ -162,13 +173,19 @@ int  robot::initHardware(){
 int main () { // example of main ( ) i n v o k i n g the c l a s s
 	robot.initHardware();
 	open_screen_stream();
+	quadrant = 1;
 	Robot robot;
-	robot.openGate();
 	int count = 0;
-	while(count < 1000){
-		robot.MeasureLine();
-		robot.moving();
-		count++;
+	if (quadrant == 1 ){
+		robot.openGate();
+		quadrant ++;
+	}
+	else if (quadrant == 2) {
+		while(count < 1000){
+			robot.MeasureLine();
+			robot.moving();
+			count++;
+		}
 	}
 	close_screen_stream();
 	return 0;
