@@ -1,26 +1,3 @@
-/*
- * engr101.cxx
- * 
- * Copyright 2019 Pham Dong <dongpham@batavia.ecs.vuw.ac.nz>
- * 
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- * 
- * 
- */
-
 #include <iostream>
 #include <math.h>
 #include <sys/time.h>
@@ -31,11 +8,21 @@ using namespace std;
 
 class Robot{ //declaration
 	private:
-		int whiteness[320];
+	int whiteness[320];
+	int redness[320] ;
 		int v_left,v_right, cam_tilt;
 		int dv;
 		double line_error;
 		int quadrant;
+		
+	int leftWhite = 0;
+        int black = 0;
+        int rightWhite = 0;
+	int red = 0;
+        
+        int mArea = 20;
+        double speed = 10;
+        
 		const int cam_width = 320;
 		const  int cam_height  =240;
 		
@@ -49,12 +36,13 @@ class Robot{ //declaration
 	public:
 		Robot(){};
 		~Robot(){};
-
+		
 		int initHardware();
 		void ReadSetMotors();
 		void SetMotors();
 		int MeasureLine();
-		int FollowLine();
+	//	int FollowLine();
+		void move();
 		void openGate();
 		void turnRight(int speed);
 		void turnLeft(int speed);
@@ -69,6 +57,7 @@ int Robot::MeasureLine(){
         //Clear the array
         for(int i = 0; i<320; i++){
                 fill_n(whiteness, i , 0);
+		 fill_n(redness, i , 0);
         }
         //Testing loop for camera input
         /*for(int col = 0; col< 320; col++){
@@ -79,12 +68,15 @@ int Robot::MeasureLine(){
                         cout << " _______ ";
                 }
         }*/
-        int leftWhite = 0;
-        int black = 0;
-        int rightWhite = 0;
+       leftWhite = 0;
+       rightWhite=0;
+       black =0;
+	red = 0;
         for(int col = 0; col<320; col++){
                 int intensity = (int)get_pixel(row,col, 3);
-                whiteness[col] = intensity;
+		whiteness[col] = intensity;
+		int red = (int)get_pixel(row,col, 1)
+		redness[col] = red;
         }
         for(int col = 0; col<320; col++){
                 while(whiteness[col] > 80){
@@ -100,11 +92,15 @@ int Robot::MeasureLine(){
                         col++;
                 }
         }
+	
+        
 
-        double ratio = (leftWhite-rightWhite);
+}
+
+void Robot::moving(){
+	  double ratio = (leftWhite-rightWhite);
         cout << "   " << ratio << "   ";
-        int mArea = 20;
-        double speed = 10;
+        
         if(ratio > mArea){
                 //turn right
                 speed = getSpeed(ratio, mArea);
@@ -119,9 +115,14 @@ int Robot::MeasureLine(){
                 //go straight
                 goStraight();
         }
-         
+        
+	if ( redness> 0.65) {
+	  //breaks;	
+		quadrant ++;
+		printf("break");
+	}
         return 0;
-
+	
 }
 
 double Robot::getSpeed(double ratio, double mArea){
@@ -165,15 +166,26 @@ void Robot::goStraight(){
 	cout << "_________ ";
 }
 
-int main () { // example of main ( ) i n v o k i n g the c l a s s
+int  robot::initHardware(){
 	int err = init(0);
+}
+
+int main () { // example of main ( ) i n v o k i n g the c l a s s
+	robot.initHardware();
 	open_screen_stream();
+	quadrant = 1;
 	Robot robot;
-	robot.openGate();
 	int count = 0;
-	while(count < 1000){
-		robot.MeasureLine();
-		count++;
+	if (quadrant == 1 ){
+		robot.openGate();
+		quadrant ++;
+	}
+	else if (quadrant == 2) {
+		while(count < 1000){
+			robot.MeasureLine();
+			robot.moving();
+			count++;
+		}
 	}
 	close_screen_stream();
 	return 0;
